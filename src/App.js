@@ -1,20 +1,15 @@
-import {
-  Container,
-  Grid,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import Header from "./components/Header";
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 import Textfield from "./components/FormsUI/Textfield";
 import Select from "./components/FormsUI/Select";
 import DateTimePicker from "./components/FormsUI/DataTimePicker";
 import Checkbox from "./components/FormsUI/Checkbox";
 import Button from "./components/FormsUI/Button";
 import countries from "./data/countries.json";
+import { addfirebaseData } from "./addfirebase";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -39,28 +34,6 @@ const INITIAL_FORM_STATE = {
   termsOfService: false,
 };
 
-const FORM_VALIDATION = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email.").required("Required"),
-  phone: Yup.number()
-    .integer()
-    .typeError("Please enter a valid phone number")
-    .required("Required")
-    .min(10),
-  addressLine1: Yup.string().required("Required"),
-  addressLine2: Yup.string().required("Required"),
-  city: Yup.string().required("Required"),
-  state: Yup.string().required("Required"),
-  country: Yup.string().required("Required"),
-  arrivealDate: Yup.date().required("Required"),
-  departureDate: Yup.date().required("Required"),
-  message: Yup.string(),
-  termsOfService: Yup.boolean()
-    .oneOf([true], "The Terms and conditions must be accepted.")
-    .required("The Terms and conditions must be accepted"),
-});
-
 const App = () => {
   const classes = useStyles();
 
@@ -76,9 +49,13 @@ const App = () => {
               initialValues={{
                 ...INITIAL_FORM_STATE,
               }}
-              validationSchema={FORM_VALIDATION}
-              onSubmit={(values) => {
-                console.log(values);
+              // validationSchema={FORM_VALIDATION}
+              onSubmit={(values, { resetForm }) => {
+
+                // add firebase to add values in store
+                addfirebaseData(values);
+                resetForm();
+                alert("Your form submited");
               }}
             >
               <Form>
@@ -96,7 +73,7 @@ const App = () => {
                     <Textfield name="email" label="Email" />
                   </Grid>
                   <Grid item xs={12}>
-                    <Textfield name="phone" label="Phone" />
+                    <Textfield name="phone" label="Phone" type="number" />
                   </Grid>
                   <Grid item xs={12}>
                     <Typography>Address</Typography>

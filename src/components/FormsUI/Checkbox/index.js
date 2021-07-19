@@ -13,6 +13,7 @@ const CheckboxWrapper = ({ name, label, legend, ...otherProps }) => {
   const [field, meta] = useField(name);
 
   const handleChange = (evt) => {
+    
     const { checked } = evt.target;
     setFieldValue(name, checked);
   };
